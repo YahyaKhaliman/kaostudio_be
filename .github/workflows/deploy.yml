@@ -31,9 +31,8 @@ jobs:
             # Menginstal dependensi baru jika ada perubahan di package.json
             npm install --omit=dev
 
-            # Merestart proses PM2
-            # Ganti 'kaostudio-be' dengan nama proses PM2 Anda atau jalankan perintah start jika belum berjalan
-            pm2 restart kaostudio-be || pm2 start src/index.js --name "kaostudio-be"
+            # Merestart proses PM2 dengan memuat ulang variabel lingkungan terbaru (--update-env)
+            pm2 restart ${{ secrets.PM2_APP_NAME }} --update-env"
 
             # Menyimpan konfigurasi PM2 saat ini agar otomatis berjalan kembali jika VPS reboot
             pm2 save
