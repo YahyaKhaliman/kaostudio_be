@@ -39,10 +39,7 @@ const getProduk = async () => {
             const code = row.brg_kode;
             
             if (!productsMap[code]) {
-                let kain = row.brg_jeniskain ? row.brg_jeniskain.trim().toUpperCase() : "LAINNYA";
-                if (kain.includes("COMBED")) {
-                    kain = "COMBED";
-                }
+                const kain = row.brg_jeniskain ? row.brg_jeniskain.trim().toUpperCase() : "LAINNYA";
 
                 productsMap[code] = {
                     brg_kode: row.brg_kode,
@@ -114,7 +111,7 @@ const getWarnaTersedia = async () => {
         const mapping = {};
 
         // Inisialisasi struktur default agar response konsisten
-        const bahanList = ["COMBED", "POLO LACOS CVC"];
+        const bahanList = ["COMBED 30S", "COMBED 24S", "POLO LACOS CVC"];
         bahanList.forEach((b) => {
             mapping[b] = {
                 tshirt: [],
@@ -124,10 +121,7 @@ const getWarnaTersedia = async () => {
         });
 
         rows.forEach((row) => {
-            let kain = row.brg_jeniskain ? row.brg_jeniskain.trim().toUpperCase() : "LAINNYA";
-            if (kain.includes("COMBED")) {
-                kain = "COMBED";
-            }
+            const kain = row.brg_jeniskain ? row.brg_jeniskain.trim().toUpperCase() : "LAINNYA";
             
             // Tentukan model pakaian
             let model = "tshirt";
