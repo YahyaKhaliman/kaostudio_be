@@ -1,11 +1,11 @@
 const express = require("express");
 const cors = require("cors");
-require("dotenv").config();
-
+const { PORT, NODE_ENV } = require("./config/database");
+const errorHandler = require("./middlewares/errorHandler");
+const { successResponse } = require("./utils/responseHelper");
 const apiRoutes = require("./routes/api");
 
 const app = express();
-const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
@@ -14,12 +14,17 @@ app.use(express.json());
 // Routes
 app.use("/api", apiRoutes);
 
-// Health check endpoint
 app.get("/health", (req, res) => {
-  res.json({ status: "OK", timestamp: new Date() });
+    return successResponse(
+        res,
+        { timestamp: new Date() },
+        "API KaoStudio Ready",
+    );
 });
 
-// Start Server
+app.use(errorHandler);
+
 app.listen(PORT, () => {
-  console.log(`🚀 Server berjalan di http://localhost:${PORT}`);
+    console.log(`🚀 Server berjalan di mode [${NODE_ENV}] pada port: ${PORT}`);
 });
+ 

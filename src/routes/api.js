@@ -1,16 +1,12 @@
 const express = require("express");
 const router = express.Router();
 
-const produkController = require("../controllers/produkController");
-const kalkulasiController = require("../controllers/kalkulasiController");
+const produkRoute = require("./produk.route");
+const kalkulasiRoute = require("./kalkulasi.route");
+const designRoute = require("./design.route");
 
-// Rute untuk mendapatkan data produk kaos dari DB
-router.get("/produk-kaos", produkController.getProdukKaos);
-
-// Rute untuk mendapatkan data tarif tambahan jasa dari DB
-router.get("/tarif-jasa", produkController.getTarifJasa);
-
-// Rute untuk melakukan kalkulasi harga secara dinamis di backend
-router.post("/kalkulasi-harga", kalkulasiController.calculatePrice);
+router.use(produkRoute);
+router.use(kalkulasiRoute);
+router.use(designRoute);
 
 module.exports = router;
