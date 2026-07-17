@@ -1,0 +1,39 @@
+name: Deploy Backend to VPS
+
+on:
+  push:
+    branches:
+      - main # Workflow akan berjalan otomatis setiap ada push ke branch main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy ke VPS via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || '22' }}
+          script: |
+            # Mengaktifkan nvm (Node Version Manager) jika terinstal di VPS (opsional, sesuaikan dengan environment Anda)
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+            # Navigasi ke direktori project backend di VPS yang disimpan di GitHub Secrets
+            cd ${{ secrets.VPS_BACKEND_PATH }}
+
+            # Melakukan pull code terbaru dari repository
+            git pull origin main
+
+            # Menginstal dependensi baru jika ada perubahan di package.json
+            npm install --omit=dev
+
+            # Merestart proses PM2
+            # Ganti 'kaostudio-be' dengan nama proses PM2 Anda atau jalankan perintah start jika belum berjalan
+            pm2 restart kaostudio-be || pm2 start src/index.js --name "kaostudio-be"
+
+            # Menyimpan konfigurasi PM2 saat ini agar otomatis berjalan kembali jika VPS reboot
+            pm2 save
