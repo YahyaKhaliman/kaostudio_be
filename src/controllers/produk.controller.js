@@ -7,7 +7,7 @@ const getProduk = async (req, res, next) => {
 
         return successResponse(res, result, "Berhasil mengambil data produk");
     } catch (error) {
-        console.error("Gagal mengambil data produk di controller:", error);
+        console.error("Gagal mengambil data produk di controller", error);
         next(error);
     }
 };
