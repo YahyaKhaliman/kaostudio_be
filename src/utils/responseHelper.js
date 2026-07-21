@@ -1,5 +1,3 @@
-// Helper  response API
-
 /**
  * Response sukses
  * @param {Object} res
