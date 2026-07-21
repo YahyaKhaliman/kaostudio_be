@@ -3,13 +3,15 @@ const express = require("express");
 const cors = require("cors");
 const { PORT, NODE_ENV } = require("./config/database");
 const errorHandler = require("./middlewares/errorHandler");
+const { corsMiddleware, corsOptions } = require("./middlewares/corsMiddleware");
 const { successResponse } = require("./utils/responseHelper");
 const apiRoutes = require("./routes/api");
 
 const app = express();
 
-// Middleware
-app.use(cors());
+// Middleware CORS
+app.use(corsMiddleware);
+
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
