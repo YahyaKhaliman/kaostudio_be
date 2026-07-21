@@ -1,3 +1,4 @@
+const path = require("path");
 const express = require("express");
 const cors = require("cors");
 const { PORT, NODE_ENV } = require("./config/database");
@@ -9,7 +10,20 @@ const app = express();
 
 // Middleware
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
+
+// Serve static files (uploads folder) dengan Header CORS penuh untuk mencegah tainted canvas
+app.use(
+    "/uploads",
+    express.static(path.join(__dirname, "../uploads"), {
+        setHeaders: (res) => {
+            res.setHeader("Access-Control-Allow-Origin", "*");
+            res.setHeader("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS");
+            res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+        },
+    })
+);
 
 // Routes
 app.use("/api", apiRoutes);

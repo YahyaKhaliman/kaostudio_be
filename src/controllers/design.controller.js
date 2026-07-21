@@ -4,7 +4,7 @@ const { successResponse } = require("../utils/responseHelper");
 
 const createDesign = async (req, res, next) => {
     try {
-        const { canvasState, shirtColor, viewType, csNameTemp, csPhoneTemp } =
+        const { id: customId, canvasState, shirtColor, viewType, csNameTemp, csPhoneTemp } =
             req.body;
 
         if (!canvasState || !shirtColor || !viewType) {
@@ -15,7 +15,7 @@ const createDesign = async (req, res, next) => {
             });
         }
 
-        const id = crypto.randomUUID();
+        const id = customId || crypto.randomUUID();
 
         const result = await designService.saveDesign({
             id,

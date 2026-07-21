@@ -60,8 +60,20 @@ const getWarnaTersedia = async (req, res, next) => {
     }
 };
 
+const searchProduk = async (req, res, next) => {
+    try {
+        const { term = "" } = req.query;
+        const result = await produkService.searchProduk(term);
+        return successResponse(res, result, "Berhasil mencari data produk");
+    } catch (error) {
+        console.error("Gagal melakukan pencarian produk di controller:", error);
+        next(error);
+    }
+};
+
 module.exports = {
     getProduk,
     getTarifJasa,
     getWarnaTersedia,
+    searchProduk,
 };

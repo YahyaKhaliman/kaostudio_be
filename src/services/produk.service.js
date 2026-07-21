@@ -152,8 +152,58 @@ const getWarnaTersedia = async () => {
     }
 };
 
+const searchProduk = async (term = "") => {
+    const query = `
+      SELECT 
+        a.brg_kode,
+        TRIM(CONCAT(
+          IFNULL(a.brg_jeniskaos, ''), ' ',
+          IFNULL(a.brg_tipe, ''), ' ',
+          IFNULL(a.brg_lengan, ''), ' ',
+          IFNULL(a.brg_jeniskain, ''), ' ',
+          IFNULL(a.brg_warna, '')
+        )) AS brg_nama,
+        a.brg_warna,
+        b.brgd_ukuran,
+        b.brgd_harga,
+        b.brgd_barcode
+      FROM tbarangdc a
+      INNER JOIN tbarangdc_dtl b ON a.brg_kode = b.brgd_kode
+      WHERE a.brg_aktif = 0
+        AND LOWER(a.brg_ktgp) IN ('reguler', 'sesional')
+        AND (
+          a.brg_kode LIKE ? 
+          OR a.brg_warna LIKE ? 
+          OR a.brg_jeniskaos LIKE ?
+          OR a.brg_lengan LIKE ?
+          OR a.brg_jeniskain LIKE ?
+          OR b.brgd_barcode LIKE ?
+          OR TRIM(CONCAT(IFNULL(a.brg_jeniskaos, ''), ' ', IFNULL(a.brg_tipe, ''), ' ', IFNULL(a.brg_lengan, ''), ' ', IFNULL(a.brg_jeniskain, ''), ' ', IFNULL(a.brg_warna, ''))) LIKE ?
+        )
+      ORDER BY a.brg_kode, b.brgd_ukuran
+      LIMIT 50
+    `;
+    const searchPattern = `%${term}%`;
+    try {
+        const [rows] = await pool.query(query, [
+            searchPattern,
+            searchPattern,
+            searchPattern,
+            searchPattern,
+            searchPattern,
+            searchPattern,
+            searchPattern,
+        ]);
+        return rows || [];
+    } catch (error) {
+        console.error("Gagal melakukan pencarian produk di database:", error.message);
+        throw error;
+    }
+};
+
 module.exports = {
     getProduk,
     getTarifJasa,
     getWarnaTersedia,
+    searchProduk,
 };
